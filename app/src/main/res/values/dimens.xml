@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="defmargin">10dp</dimen>
+    <dimen name="marginTitle">-50dp</dimen>
+    <dimen name="borderRadius">20dp</dimen>
+    <dimen name="marginTop">-150dp</dimen>
+    <dimen name="margin">150dp</dimen>
+</resources>

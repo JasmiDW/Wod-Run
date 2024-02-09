@@ -1,3 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Wod&amp;RunApp</string>
+    <string name="titleApp">Wod</string>
+    <string name="titleApp2"><![CDATA[&Run]]></string>
+    <string name="app_name">Wod</string>
+    <string name="buttonRun">Run</string>
 </resources>

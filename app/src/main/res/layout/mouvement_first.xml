@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="380dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="10dp"
+    android:background="@drawable/border_first_mouvement"
+    android:layout_marginBottom="30dp"
+    android:id="@+id/layout"
+    android:layout_marginStart="30dp"
+    android:layout_marginTop="100dp"
+    >
+
+    <TextView
+        android:id="@+id/mouvement"
+        tools:text="Les mouvements"
+        android:textSize="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue"
+        android:fontFamily="@font/assistant_extrabold"
+        android:layout_marginBottom="30dp"/>
+
+    <TextView
+        android:id="@+id/nom"
+        tools:text="Nom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue"
+        android:fontFamily="@font/assistant_semibold"
+        android:layout_below="@id/mouvement"
+        android:textSize="18dp"/>
+
+    <TextView
+        android:id="@+id/categorie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/purple"
+        tools:text="Categorie"
+        android:fontFamily="@font/assistant_light"
+        android:layout_below="@id/nom"
+        android:textSize="15dp"/>
+
+    <LinearLayout
+        android:id="@+id/pr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/categorie"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/iconPR"
+            android:background="@drawable/icon_record"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="10dp"
+
+            />
+
+        <TextView
+            android:id="@+id/prRecord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/assistant_semibold"
+            android:textColor="@color/orange"
+            tools:text="PR Record"
+            />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/img"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/mouvement"
+        android:layout_marginEnd="30dp"
+        />
+
+    <include
+        android:id="@+id/button"
+        layout="@layout/btn_record_layout"
+        android:layout_below="@id/pr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"/>
+
+
+</RelativeLayout>
