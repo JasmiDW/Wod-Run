@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="240dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp"
     android:background="@drawable/border_radius"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginBottom="100dp">
+    android:layout_marginBottom="10dp">
 
 
     <TextView
@@ -18,7 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/blue"
-        android:fontFamily="@font/assistant_bold"
+        android:fontFamily="@font/assistant_semibold"
+        android:layout_below="@id/mouvement"
         android:textSize="18dp"/>
 
     <TextView
@@ -27,14 +25,17 @@
         android:layout_height="wrap_content"
         android:textColor="@color/purple"
         tools:text="Categorie"
-        android:fontFamily="@font/assistant_light"/>
+        android:fontFamily="@font/assistant_light"
+        android:layout_below="@id/nom"
+        android:textSize="15dp"/>
 
     <LinearLayout
+        android:id="@+id/pr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/addRecord"
+        android:layout_below="@id/categorie"
         android:orientation="horizontal"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:id="@+id/iconPR"
@@ -56,21 +57,30 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/img" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/addRecord"
+        android:layout_below="@id/pr"
         android:orientation="horizontal"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="9dp">
 
-    <include
-        android:id="@+id/button"
-        layout="@layout/btn_record_layout"
-        android:layout_below="@id/prRecord"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"/>
+        <include
+            android:id="@+id/button"
+            layout="@layout/btn_record_layout"
+            android:layout_below="@id/pr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"/>
 
         <include
             android:id="@+id/button_youtube"
@@ -78,8 +88,9 @@
             android:layout_below="@id/prRecord"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="9dp"/>
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

@@ -5,39 +5,55 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
 class MouvementAdapter (
-    private val actyivityParent: AppCompatActivity,
-    mouvements: List<Mouvements>,
+    private val activityParent: AppCompatActivity,
+    private val mouvements: List<Mouvements>,
     private val buttonClicked: (mvt : Mouvements) -> Unit,
     private val youtubeClicked: (mvt : Mouvements) -> Unit
-) : ArrayAdapter<Mouvements>(actyivityParent, R.layout.mouvement_layout, mouvements){
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val cell = convertView ?: LayoutInflater.from(context).inflate(R.layout.mouvement_layout, null)
+) : RecyclerView.Adapter<MouvementAdapter.ViewHolder>() {
 
-        getItem(position)?.let { mouvement ->
-            cell.findViewById<TextView>(R.id.nom).text = mouvement?.name
-            cell.findViewById<TextView>(R.id.categorie).text = mouvement?.type
-            cell.findViewById<TextView>(R.id.btn_youtube).setOnClickListener {
-                youtubeClicked(mouvement)
-            }
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val nom: TextView = view.findViewById(R.id.nom)
+        val categorie: TextView = view.findViewById(R.id.categorie)
+        val btnYoutube: TextView = view.findViewById(R.id.btn_youtube)
+        val prRecord: TextView = view.findViewById(R.id.prRecord)
+        val btnRecord: TextView = view.findViewById(R.id.btn_record)
+        val image: ImageView = view.findViewById(R.id.image)
+    }
 
-            GlobalScope.launch(Dispatchers.Main) {
-                cell.findViewById<TextView>(R.id.prRecord).text =
-                    (actyivityParent.application as WRApplication).personnalRecordDao.getLastPrRecordByMouvementId(mouvement.id)
-            }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.mouvement_layout, parent, false)
+        return ViewHolder(view)
+    }
 
-            cell.findViewById<TextView>(R.id.btn_record).setOnClickListener {
-                buttonClicked(mouvement);
-            }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val mouvement = mouvements[position]
+        Picasso.get().load(mouvement.image).into(holder.image);
+        holder.nom.text = mouvement.name
+        holder.categorie.text = mouvement.type
+        holder.btnYoutube.setOnClickListener {
+            youtubeClicked(mouvement)
         }
 
-        return cell
+        GlobalScope.launch(Dispatchers.Main) {
+            holder.prRecord.text =
+                (activityParent.application as WRApplication).personnalRecordDao.getLastPrRecordByMouvementId(mouvement.id)
+        }
+
+        holder.btnRecord.setOnClickListener {
+            buttonClicked(mouvement)
+        }
     }
+
+    override fun getItemCount() = mouvements.size
 }

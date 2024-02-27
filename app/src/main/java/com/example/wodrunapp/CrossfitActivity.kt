@@ -1,15 +1,18 @@
 package com.example.wodrunapp
 
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
-import android.widget.ListView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.wodrunapp.service.ApiClient
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -21,9 +24,33 @@ class CrossfitActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crossfit)
 
-        executeCall()
+        val mouvementList = findViewById<RecyclerView>(R.id.mouvementList)
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        mouvementList.layoutManager = layoutManager
+        mouvementList.addItemDecoration(SpacesItemDecoration(10))
+
+        executeCall(mouvementList, layoutManager)
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_crossfit -> {
+                    // Vous êtes déjà dans CrossfitActivity, donc aucune action n'est nécessaire
+                    true
+                }
+                R.id.nav_run -> {
+                    // Naviguer vers RunActivity
+                    val intent = Intent(this, CrossfitActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
     }
-    private fun executeCall(){
+    private fun executeCall(mouvementList: RecyclerView, layoutManager: LinearLayoutManager){
         GlobalScope.launch(Dispatchers.Main) {
             try {
                 val response = ApiClient.apiService.getMouvements()
@@ -47,7 +74,7 @@ class CrossfitActivity : AppCompatActivity() {
                         type.text = first.type
                         Picasso.get().load(first.image).into(image);
                         youtube.apply {
-                            youtube.text = "Youtube"
+                            text = "Youtube"
                             setOnClickListener {
                                 val youtubeIntent = Intent(Intent.ACTION_VIEW, Uri.parse(first.video))
                                 context.startActivity(youtubeIntent)
@@ -56,15 +83,14 @@ class CrossfitActivity : AppCompatActivity() {
 
                         record.text = (application as WRApplication).personnalRecordDao.getLastPrRecordByMouvementId(first.id)
 
+                        val autres = content?.drop(1)
+                        val adapter = MouvementAdapter(this@CrossfitActivity, autres!!,
+                            buttonClicked = { goToDetails(it) },
+                            youtubeClicked = { openYoutubeLink(it) }
+                        )
+
+                        mouvementList.adapter = adapter
                     }
-
-                    val autres = content?.drop(1)
-                    val listView = findViewById<ListView>(R.id.mouvementList)
-                    listView.adapter = MouvementAdapter(this@CrossfitActivity, autres!!,
-                        buttonClicked = { goToDetails(it) },
-                        youtubeClicked = { openYoutubeLink(it) }
-                    )
-
                 } else {
                     Toast.makeText(
                         this@CrossfitActivity, "Erreur: ${response.message()}",
@@ -90,4 +116,19 @@ class CrossfitActivity : AppCompatActivity() {
     }
 
 
+}
+class SpacesItemDecoration(private val space: Int) : RecyclerView.ItemDecoration() {
+    override fun getItemOffsets(
+        outRect: Rect, view: View,
+        parent: RecyclerView, state: RecyclerView.State
+    ) {
+        outRect.left = space
+        outRect.right = space
+        outRect.bottom = space
+
+        // Add top margin only for the first item to avoid double space between items
+        if (parent.getChildLayoutPosition(view) == 0) {
+            outRect.top = space
+        }
+    }
 }

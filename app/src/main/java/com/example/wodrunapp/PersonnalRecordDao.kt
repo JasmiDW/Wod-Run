@@ -15,6 +15,9 @@ interface PersonnalRecordDao {
     @Query("SELECT personnalRecord FROM PersonnalRecord WHERE mouvementId = :id ORDER BY id")
     suspend fun getPrRecordByMouvementId(id:Int): String?
 
+    @Query("SELECT * FROM PersonnalRecord WHERE mouvementId = :id ORDER BY id")
+    suspend fun getPrRecordsByMouvementId(id:Int): List<PersonnalRecord>?
+
     @Insert
     suspend fun insertAll(vararg  personnalRecords: PersonnalRecord)
 

@@ -62,4 +62,10 @@ dependencies {
 
     annotationProcessor("androidx.room:room-compiler:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
+
+    implementation("com.google.android.material:material:1.11.0")
+
+
+
+
 }

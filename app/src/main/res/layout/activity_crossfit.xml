@@ -12,11 +12,26 @@
         android:id="@+id/main"
         layout="@layout/mouvement_first" />
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mouvementList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_below="@id/main"
         />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_navigation_menu"
+        app:itemIconTint="@color/orange"
+        app:backgroundTint="@color/white"
+        app:itemTextColor="#DCD6F7"
+        app:itemBackground="@color/bottom_navigation_item_background"
+        app:itemTextAppearanceActive="@style/BottomNavigationViewTextAppearance"
+        app:itemTextAppearanceInactive="@style/BottomNavigationViewTextAppearance"/>
 
 </RelativeLayout>

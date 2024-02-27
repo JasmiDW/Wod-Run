@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/nav_crossfit"
+        android:icon="@drawable/crossfit_icon"
+        android:title="Crossfit"
+        android:background="@drawable/bottom_navigation_icon_background"/>
+    <item
+        android:id="@+id/nav_run"
+        android:icon="@drawable/run_icon"
+        android:textSize="10dp"
+        android:title="Run"
+        android:background="@drawable/bottom_navigation_icon_background"/>
+</menu>

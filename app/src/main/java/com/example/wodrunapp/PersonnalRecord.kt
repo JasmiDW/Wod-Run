@@ -10,4 +10,6 @@ data class PersonnalRecord (
     @ColumnInfo val mouvementId: Int = 0,
     @ColumnInfo val personnalRecord : String? = null
 
+
+
 )
