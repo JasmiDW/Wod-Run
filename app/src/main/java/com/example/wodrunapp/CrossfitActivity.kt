@@ -1,6 +1,7 @@
 package com.example.wodrunapp
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
@@ -45,7 +46,13 @@ class CrossfitActivity : AppCompatActivity() {
                         name.text = first.name
                         type.text = first.type
                         Picasso.get().load(first.image).into(image);
-                        youtube.text = first.video
+                        youtube.apply {
+                            youtube.text = "Youtube"
+                            setOnClickListener {
+                                val youtubeIntent = Intent(Intent.ACTION_VIEW, Uri.parse(first.video))
+                                context.startActivity(youtubeIntent)
+                            }
+                        }
 
                         record.text = (application as WRApplication).personnalRecordDao.getLastPrRecordByMouvementId(first.id)
 
@@ -53,9 +60,10 @@ class CrossfitActivity : AppCompatActivity() {
 
                     val autres = content?.drop(1)
                     val listView = findViewById<ListView>(R.id.mouvementList)
-                    listView.adapter = MouvementAdapter(this@CrossfitActivity, autres!!) {
-                        goToDetails(it)
-                    }
+                    listView.adapter = MouvementAdapter(this@CrossfitActivity, autres!!,
+                        buttonClicked = { goToDetails(it) },
+                        youtubeClicked = { openYoutubeLink(it) }
+                    )
 
                 } else {
                     Toast.makeText(
@@ -75,4 +83,11 @@ class CrossfitActivity : AppCompatActivity() {
         (application as WRApplication).currentMouvement = mouvement
         startActivity(Intent(this@CrossfitActivity, RecordActivity::class.java))
     }
+
+    private fun openYoutubeLink(mouvement: Mouvements) {
+        val youtubeIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mouvement.video))
+        startActivity(youtubeIntent)
+    }
+
+
 }
