@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="380dp"
-    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_height="200dp"
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp"
     android:background="@drawable/border_first_mouvement"
     android:layout_marginBottom="30dp"
     android:id="@+id/layout"
-    android:layout_marginStart="30dp"
     android:layout_marginTop="100dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
     >
 
     <TextView
@@ -20,7 +21,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/blue"
         android:fontFamily="@font/assistant_extrabold"
-        android:layout_marginBottom="30dp"/>
+        android:layout_marginBottom="10dp"/>
 
     <TextView
         android:id="@+id/nom"
@@ -48,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/categorie"
         android:orientation="horizontal"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:id="@+id/iconPR"
@@ -80,6 +81,13 @@
         android:layout_marginEnd="30dp"
         />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pr"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
     <include
         android:id="@+id/button"
         layout="@layout/btn_record_layout"
@@ -87,6 +95,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"/>
+
+    <include
+        android:id="@+id/button_youtube"
+        layout="@layout/btn_youtube"
+        android:layout_below="@id/prRecord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"/>
+
+    </LinearLayout>
 
 
 </RelativeLayout>

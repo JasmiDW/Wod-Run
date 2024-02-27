@@ -21,7 +21,7 @@ class MouvementAdapter (private val actyivityParent: AppCompatActivity, mouvemen
         getItem(position)?.let { mouvement ->
             cell.findViewById<TextView>(R.id.nom).text = mouvement?.name
             cell.findViewById<TextView>(R.id.categorie).text = mouvement?.type
-            cell.findViewById<TextView>(R.id.btn_youtube).text = mouvement?.video
+            //cell.findViewById<TextView>(R.id.btn_youtube).text = mouvement?.video
 
             GlobalScope.launch(Dispatchers.Main) {
                 cell.findViewById<TextView>(R.id.prRecord).text =
