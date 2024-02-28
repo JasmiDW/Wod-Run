@@ -3,30 +3,38 @@ package com.example.wodrunapp
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Rect
-import android.net.Uri
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.wodrunapp.service.ApiClient
+
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
 
 class RunActivity : AppCompatActivity() {
 
     private var selectedItemId = R.id.nav_run
+    private lateinit var mapView: MapView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_run)
+        mapView = findViewById(R.id.mapView)
+        mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
+        mapView.setMultiTouchControls(true)
+
+        Configuration.getInstance().userAgentValue = packageName
+        val mapController = mapView.controller
+        mapController.setZoom(9.5)
+        val startPoint = GeoPoint(48.8583, 2.2944)
+        mapController.setCenter(startPoint)
+
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 

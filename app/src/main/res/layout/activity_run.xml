@@ -21,6 +21,11 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"/>
 
+    <org.osmdroid.views.MapView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/mapView"/>
+
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
