@@ -64,6 +64,7 @@ dependencies {
     kapt("androidx.room:room-compiler:$room_version")
 
     implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.transition:transition:1.4.1")
 
 
 

@@ -33,6 +33,8 @@ class CrossfitActivity : AppCompatActivity() {
         executeCall(mouvementList, layoutManager)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        // Définir manuellement l'élément sélectionné à Run
+        bottomNavigationView.selectedItemId = R.id.nav_crossfit
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -42,8 +44,10 @@ class CrossfitActivity : AppCompatActivity() {
                 }
                 R.id.nav_run -> {
                     // Naviguer vers RunActivity
-                    val intent = Intent(this, CrossfitActivity::class.java)
+                    val intent = Intent(this, RunActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
+
                     true
                 }
                 else -> false

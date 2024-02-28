@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#DCD6F7"
-    tools:context=".CrossfitActivity"
+    tools:context=".RunActivity"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Crossfit"
+        android:text="Run"
         android:textSize="24sp"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
@@ -21,18 +21,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"/>
 
-    <include
-        android:id="@+id/main"
-        layout="@layout/mouvement_first" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mouvementList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_below="@id/main"
-        />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
