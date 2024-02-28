@@ -5,6 +5,21 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="testButtonAddRecords()">
+        <State />
+      </entry>
+      <entry key="testButtonYoutube()">
+        <State />
+      </entry>
+      <entry key="testNavigationToAddRecord()">
+        <State />
+      </entry>
+      <entry key="testNavigationToRunActivity()">
+        <State />
+      </entry>
+      <entry key="testYoutubeButton()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
