@@ -14,8 +14,12 @@ import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.text.InputType
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.room.Room
 
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
@@ -33,16 +37,31 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import java.util.Date
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 
 class RunActivity : AppCompatActivity() {
 
     private var selectedItemId = R.id.nav_run
     private lateinit var mapView: MapView
+    private var lastKnownLocation: GeoPoint? = null
+    private lateinit var db: AppDatabaseRun
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_run)
+
+        db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabaseRun::class.java, "run_database"
+        ).addMigrations(MIGRATION_1_2).build()
+
+
         mapView = findViewById(R.id.mapView)
         mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
         mapView.setMultiTouchControls(true)
@@ -50,7 +69,7 @@ class RunActivity : AppCompatActivity() {
         Configuration.getInstance().userAgentValue = packageName
         val mapController = mapView.controller
         mapController.setZoom(18.5)
-        val startPoint = GeoPoint(48.8583, 2.2944)
+        val startPoint = lastKnownLocation ?: GeoPoint(48.8583, 2.2944)
         mapController.setCenter(startPoint)
 
         listenToNewMarkers()
@@ -68,7 +87,6 @@ class RunActivity : AppCompatActivity() {
             } else {
                 requestPermission()
             }
-
 
         }
 
@@ -92,7 +110,7 @@ class RunActivity : AppCompatActivity() {
                         true
                     }
                     R.id.nav_run -> {
-                        // Vous êtes déjà dans RunActivity, donc aucune action n'est nécessaire
+                        // Déjà dans RunActivity, donc aucune action n'est nécessaire
                         true
                     }
                     else -> false
@@ -100,32 +118,16 @@ class RunActivity : AppCompatActivity() {
             }
         }
 
+        db.courseDao().getAll().observe(this@RunActivity) { courses ->
+            val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+            recyclerView.layoutManager = LinearLayoutManager(this@RunActivity)
+            recyclerView.adapter = CourseAdapter(courses.toMutableList(), db)
+        }
+
         executeCall()
     }
     private fun executeCall(){
         GlobalScope.launch(Dispatchers.Main) {
-
-        }
-    }
-
-    private fun addMarker() {
-        val clickListener = { marker: Marker, mapView: MapView ->
-            Toast.makeText(this, marker.snippet, Toast.LENGTH_LONG).show()
-            marker.showInfoWindow()
-            true
-        }
-
-        listOf(
-            Triple(48.8583, 2.2944, "Eiffel Tower"),
-            Triple(21, 1, "Arc de Triomphe"),
-            Triple(55, 4, "Lac"),
-        ).forEach {
-            val marker = Marker(mapView)
-            marker.title = it.third
-            marker.snippet = "Latitude: ${it.first}, Longitude: ${it.second}"
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            marker.setOnMarkerClickListener(clickListener)
-            mapView.overlays.add(marker)
 
         }
     }
@@ -139,10 +141,63 @@ class RunActivity : AppCompatActivity() {
             override fun longPressHelper(p: GeoPoint?): Boolean {
                 val marker = Marker(mapView)
                 marker.position = p
-                marker.title = "New Marker"
+                marker.title = "Nouvelle course"
                 marker.snippet = "Latitude: ${p?.latitude}, Longitude: ${p?.longitude}"
                 mapView.overlays.add(marker)
                 vibratePhone()
+
+                // Crée un dialog pour ajouter une nouvelle course
+                val builder = AlertDialog.Builder(this@RunActivity)
+                builder.setTitle("Nouvelle course")
+
+                // Créer les input
+                val nameInput = EditText(this@RunActivity)
+                nameInput.inputType = InputType.TYPE_CLASS_TEXT
+                nameInput.hint = "Nom de la course"
+
+                val distanceInput = EditText(this@RunActivity)
+                distanceInput.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+                distanceInput.hint = "Distance en km"
+
+                val timeInput = EditText(this@RunActivity)
+                timeInput.inputType = InputType.TYPE_CLASS_NUMBER
+                timeInput.hint = "Temps en minutes"
+
+                // Ajoute les input dans le dialog
+                val layout = LinearLayout(this@RunActivity)
+                layout.orientation = LinearLayout.VERTICAL
+                layout.addView(nameInput)
+                layout.addView(distanceInput)
+                layout.addView(timeInput)
+
+                builder.setView(layout)
+
+                // Met en place les boutons
+                builder.setPositiveButton("Valider") { dialog, _ ->
+                    val distance = distanceInput.text.toString().toDoubleOrNull() ?: 0.0
+                    val time = timeInput.text.toString().toLongOrNull() ?: 0L
+                    val name = nameInput.text.toString()
+
+                    val course = CourseEntity(
+                        id = 0,
+                        name = name,
+                        latitude = p?.latitude ?: 0.0,
+                        longitude = p?.longitude ?: 0.0,
+                        date = SimpleDateFormat("yyyy-MM-dd").format(Date()),
+                        distance = distance,
+                        time = time,
+                    )
+
+                    GlobalScope.launch{
+                        db.courseDao().insertAll(course)
+                    }
+
+                    dialog.dismiss()
+                }
+                builder.setNegativeButton("Annuler") { dialog, _ -> dialog.cancel() }
+
+                builder.show()
+
                 return true
             }
         })
@@ -193,7 +248,7 @@ class RunActivity : AppCompatActivity() {
         )
     }
 
-    fun activateLocation(){
+    fun activateLocation(): GeoPoint?{
         if(checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
             checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -203,6 +258,10 @@ class RunActivity : AppCompatActivity() {
                         location: Location? ->
                     Toast.makeText(this,
                         "Dernière position connue : ${location?.latitude}, ${location?.longitude} ", Toast.LENGTH_SHORT).show()
+
+                    if (location != null) {
+                        lastKnownLocation = GeoPoint(location.latitude, location.longitude)
+                    }
                 }
 
             val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
@@ -216,13 +275,19 @@ class RunActivity : AppCompatActivity() {
                         Toast.makeText(
                             this@RunActivity,
                             "Nouvelle position connue :  ${location?.latitude}, ${location?.longitude} ", Toast.LENGTH_SHORT).show()
+                            lastKnownLocation = GeoPoint(location.latitude, location.longitude)
 
                     }
+
+                    // Déplace le centre de la carte à la nouvelle position
+                    val mapController = mapView.controller
+                    mapController.animateTo(lastKnownLocation)
                 }
             }
 
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
         }
-
+        return lastKnownLocation
     }
+
 }

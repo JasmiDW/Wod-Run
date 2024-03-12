@@ -28,7 +28,7 @@
         android:layout_height="250dp"
         android:layout_marginTop="100dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="15dp"
         app:cardCornerRadius="16dp">
 
         <org.osmdroid.views.MapView
@@ -38,14 +38,24 @@
 
     </androidx.cardview.widget.CardView>
 
-    <ListView
-        android:id="@+id/courseList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_below="@id/mapStyle"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/mapStyle"
+        android:id="@+id/titleRun"
+        android:text="Listes des courses"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
         />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:layout_below="@id/titleRun"
+        android:layout_centerHorizontal="true"/>
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
