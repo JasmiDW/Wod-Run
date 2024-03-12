@@ -51,6 +51,7 @@ class RunActivity : AppCompatActivity() {
     private lateinit var mapView: MapView
     private var lastKnownLocation: GeoPoint? = null
     private lateinit var db: AppDatabaseRun
+    private val markers = mutableMapOf<CourseEntity, Marker>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -134,7 +135,7 @@ class RunActivity : AppCompatActivity() {
         db.courseDao().getAll().observe(this@RunActivity) { courses ->
             val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
             recyclerView.layoutManager = LinearLayoutManager(this@RunActivity)
-            recyclerView.adapter = CourseAdapter(courses.toMutableList(), db)
+            recyclerView.adapter = CourseAdapter(courses.toMutableList(), db, mapView, markers)
         }
 
         executeCall()
@@ -145,6 +146,7 @@ class RunActivity : AppCompatActivity() {
         }
     }
 
+    var initialMarker: Marker? = null
     private fun listenToNewMarkers() {
         val evOverlay = MapEventsOverlay(object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
@@ -152,11 +154,11 @@ class RunActivity : AppCompatActivity() {
             }
 
             override fun longPressHelper(p: GeoPoint?): Boolean {
-                val marker = Marker(mapView)
-                marker.position = p
-                marker.title = "Nouvelle course"
-                marker.snippet = "Latitude: ${p?.latitude}, Longitude: ${p?.longitude}"
-                mapView.overlays.add(marker)
+                initialMarker = Marker(mapView)
+                initialMarker?.position = p
+                initialMarker?.title = "Nouvelle course"
+                initialMarker?.snippet = "Latitude: ${p?.latitude}, Longitude: ${p?.longitude}"
+                mapView.overlays.add(initialMarker)
                 vibratePhone()
 
                 // Crée un dialog pour ajouter une nouvelle course
@@ -205,6 +207,8 @@ class RunActivity : AppCompatActivity() {
                         db.courseDao().insertAll(course)
                     }
 
+                    mapView.overlays.remove(initialMarker)
+                    initialMarker = null
                     dialog.dismiss()
                 }
                 builder.setNegativeButton("Annuler") { dialog, _ -> dialog.cancel() }

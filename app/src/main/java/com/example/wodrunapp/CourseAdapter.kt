@@ -5,16 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 
-class CourseAdapter(private var courses: MutableList<CourseEntity>, private val db: AppDatabaseRun) : RecyclerView.Adapter<CourseAdapter.CourseViewHolder>() {
+class CourseAdapter(private var courses: MutableList<CourseEntity>,
+                    private val db: AppDatabaseRun,
+                    private val mapView: MapView,
+                    private val markers: MutableMap<CourseEntity, Marker>) : RecyclerView.Adapter<CourseAdapter.CourseViewHolder>()
+{
 
 
     inner class CourseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -24,20 +31,16 @@ class CourseAdapter(private var courses: MutableList<CourseEntity>, private val 
         val timeTextView: TextView = view.findViewById(R.id.time)
 
 
-
         init {
             val deleteButton = itemView.findViewById<TextView>(R.id.button_delete)
-            deleteButton.setOnClickListener {
+            deleteButton?.setOnClickListener {
                 val course = courses[adapterPosition]
                 Toast.makeText(view.context, "Course ${course.name} supprimée", Toast.LENGTH_SHORT).show()
                 GlobalScope.launch (Dispatchers.IO)   {
                     db.courseDao().delete(course.id)
-                    launch (Dispatchers.Main) {
-                        removeItem(adapterPosition)
-
-                    }
 
                 }
+
             }
         }
     }
@@ -45,7 +48,6 @@ class CourseAdapter(private var courses: MutableList<CourseEntity>, private val 
     fun removeItem(position: Int) {
         courses.removeAt(position)
         notifyItemRemoved(position)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
