@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.osmdroid.views.MapView
 
 class CourseAdapter(private var courses: MutableList<CourseEntity>, private val db: AppDatabaseRun) : RecyclerView.Adapter<CourseAdapter.CourseViewHolder>() {
 
@@ -22,16 +23,20 @@ class CourseAdapter(private var courses: MutableList<CourseEntity>, private val 
         val distanceTextView: TextView = view.findViewById(R.id.distance)
         val timeTextView: TextView = view.findViewById(R.id.time)
 
+
+
         init {
             val deleteButton = itemView.findViewById<TextView>(R.id.button_delete)
             deleteButton.setOnClickListener {
                 val course = courses[adapterPosition]
-                Toast.makeText(view.context, "Suppression de ${course.name}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(view.context, "Course ${course.name} supprimée", Toast.LENGTH_SHORT).show()
                 GlobalScope.launch (Dispatchers.IO)   {
                     db.courseDao().delete(course.id)
                     launch (Dispatchers.Main) {
                         removeItem(adapterPosition)
+
                     }
+
                 }
             }
         }
@@ -40,6 +45,7 @@ class CourseAdapter(private var courses: MutableList<CourseEntity>, private val 
     fun removeItem(position: Int) {
         courses.removeAt(position)
         notifyItemRemoved(position)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {

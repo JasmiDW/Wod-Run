@@ -39,6 +39,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import java.util.Date
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.withContext
@@ -61,7 +62,6 @@ class RunActivity : AppCompatActivity() {
             AppDatabaseRun::class.java, "run_database"
         ).addMigrations(MIGRATION_1_2).build()
 
-
         mapView = findViewById(R.id.mapView)
         mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
         mapView.setMultiTouchControls(true)
@@ -71,6 +71,19 @@ class RunActivity : AppCompatActivity() {
         mapController.setZoom(18.5)
         val startPoint = lastKnownLocation ?: GeoPoint(48.8583, 2.2944)
         mapController.setCenter(startPoint)
+
+        db.courseDao().getAll().observe(this) { courses ->
+            for (course in courses) {
+                val startPoint = GeoPoint(course.latitude, course.longitude)
+                val startMarker = Marker(mapView)
+                startMarker.position = startPoint
+                startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                startMarker.icon = ContextCompat.getDrawable(this, R.drawable.marker_icon)
+
+                mapView.overlays.add(startMarker)
+            }
+            mapView.invalidate()
+        }
 
         listenToNewMarkers()
 
