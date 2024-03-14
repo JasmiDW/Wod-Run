@@ -159,6 +159,7 @@ class RunActivity : AppCompatActivity() {
                 initialMarker?.title = "Nouvelle course"
                 initialMarker?.snippet = "Latitude: ${p?.latitude}, Longitude: ${p?.longitude}"
                 mapView.overlays.add(initialMarker)
+                mapView.setBuiltInZoomControls(false)
                 vibratePhone()
 
                 // Crée un dialog pour ajouter une nouvelle course

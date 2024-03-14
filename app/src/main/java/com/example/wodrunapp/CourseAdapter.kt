@@ -38,8 +38,13 @@ class CourseAdapter(private var courses: MutableList<CourseEntity>,
                 Toast.makeText(view.context, "Course ${course.name} supprimée", Toast.LENGTH_SHORT).show()
                 GlobalScope.launch (Dispatchers.IO)   {
                     db.courseDao().delete(course.id)
-
                 }
+                markers[course]?.let { marker ->
+                    mapView.overlays.remove(marker)
+                    mapView.invalidate()
+                }
+                markers.remove(course)
+                removeItem(adapterPosition)
 
             }
         }
